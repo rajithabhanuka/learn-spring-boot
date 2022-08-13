@@ -5,7 +5,6 @@ Master Branch has all the topics which we cover in the future.
 
 Please Note, I don't consider unit testing here, so I skip the test for every time
 
-
 ### Part 1 - Create Project Structure ###
 
 branch name: project-structure-part-2
