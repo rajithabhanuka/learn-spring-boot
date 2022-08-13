@@ -6,18 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Slf4j
 @RestController
 @RequestMapping("fruits")
 public class FruitsController {
 
-    private static Map<Long, FruitDto> db = new HashMap<>();
+    private static final Map<Long, FruitDto> db = new HashMap<>();
 
     /**
      * @param dto contains all the fruits details to be saved
@@ -44,7 +40,7 @@ public class FruitsController {
 
         log.info("Getting all the fruits data from the database");
 
-        List<FruitDto> fruits = db.values().stream().collect(Collectors.toList());
+        List<FruitDto> fruits = new ArrayList<>(db.values());
 
         return ResponseEntity.status(HttpStatus.OK).body(fruits);
 
@@ -76,17 +72,19 @@ public class FruitsController {
                 .stream()
                 .filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
 
-        if (fruit.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(fruit.get());
-        }
-
-        return null;
+        return fruit.map(dto -> ResponseEntity.status(HttpStatus.OK).body(dto)).orElse(null);
 
     }
 
+    /**
+     *
+     * @param dto fruit object to be updated
+     * @param id for fruit
+     * @return updated details
+     */
     @PutMapping(value = "/{Id}")
     public ResponseEntity<FruitDto> update(@RequestBody FruitDto dto,
-                                           @PathVariable(value = "Id") Integer id) {
+                                           @PathVariable(value = "Id") Long id) {
 
         // If you need to search fruit id in the db, that also can do
         // If object found you can update
@@ -97,8 +95,24 @@ public class FruitsController {
 
         log.info("Updated fruits");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
 
     }
+
+    /**
+     *
+     * @param id for fruit
+     * @return message as a text
+     */
+    @DeleteMapping(value = "/{Id}")
+    public ResponseEntity<String> delete(@PathVariable(value = "Id") Long id){
+
+        log.info("Attempting to delete the fruit by its id");
+
+        db.remove(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body("successfully deleted");
+    }
+
 
 }
