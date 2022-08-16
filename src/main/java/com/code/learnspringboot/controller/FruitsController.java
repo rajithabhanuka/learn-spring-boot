@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Slf4j
@@ -20,7 +21,7 @@ public class FruitsController {
      * @return response entity with the status
      */
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody FruitDto dto) {
+    public ResponseEntity<String> save(@RequestBody @Valid FruitDto dto) {
 
         log.info("Attempting to save fruits");
 
