@@ -58,6 +58,23 @@ curl --location --request PUT 'http://localhost:8080/fruits/1' \
 curl --location --request DELETE 'http://localhost:8080/fruits/2'
 ```
 
+### Part 3 - Validation ###
+
+In this section you can see the payload validation before come in to the controller.
+
+#### save ####
+
+```
+curl --location --request POST 'http://localhost:8080/fruits' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "id" : 1,
+    "name" : "Mango1",
+    "country" : "US",
+    "qty" : 100
+}'
+```
+
 ### Part 3 - Validations ###
 
 ### Part 4 - Service Layer ###
