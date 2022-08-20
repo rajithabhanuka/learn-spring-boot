@@ -1,6 +1,7 @@
 package com.code.learnspringboot.service;
 
 import com.code.learnspringboot.dto.FruitDto;
+import com.code.learnspringboot.dto.response.ErrorResponseDto;
 import com.code.learnspringboot.dto.response.ResponseDto;
 import com.code.learnspringboot.dto.response.SuccessResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +20,29 @@ public class FruitsServiceImpl implements FruitsService {
     @Override
     public ResponseEntity<ResponseDto> save(FruitDto dto) {
 
-        log.info("Attempting to save fruits");
+        try {
 
-        db.put(dto.getId(), dto);
+            log.info("Attempting to save fruits");
 
-        log.info("saved fruits to the db");
-        log.info("fruits db size {}", db.size());
+            db.put(dto.getId(), dto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponseDto.
-                builder().
-                data(dto).
-                message("successfully saved")
-                .build());
+            log.info("saved fruits to the db");
+            log.info("fruits db size {}", db.size());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponseDto.
+                    builder().
+                    data(dto).
+                    message("successfully saved")
+                    .build());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
+                    builder()
+                    .errorCode("ERR001")
+                    .errorMessage("Something went wrong while saving fruit")
+                    .variables("Fruits ID ".concat(String.valueOf(dto.getId())))
+                    .build());
+        }
     }
 
     @Override
