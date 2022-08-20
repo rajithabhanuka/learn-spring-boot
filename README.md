@@ -75,6 +75,4 @@ curl --location --request POST 'http://localhost:8080/fruits' \
 }'
 ```
 
-### Part 3 - Validations ###
-
 ### Part 4 - Service Layer ###
