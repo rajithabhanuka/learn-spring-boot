@@ -57,3 +57,7 @@ curl --location --request PUT 'http://localhost:8080/fruits/1' \
 ```
 curl --location --request DELETE 'http://localhost:8080/fruits/2'
 ```
+
+### Part 3 - Validations ###
+
+### Part 4 - Service Layer ###
