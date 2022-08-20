@@ -1,6 +1,8 @@
 package com.code.learnspringboot.service;
 
 import com.code.learnspringboot.dto.FruitDto;
+import com.code.learnspringboot.dto.response.ResponseDto;
+import com.code.learnspringboot.dto.response.SuccessResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,7 @@ public class FruitsServiceImpl implements FruitsService {
     private static final Map<Long, FruitDto> db = new HashMap<>();
 
     @Override
-    public ResponseEntity<String> save(FruitDto dto) {
+    public ResponseEntity<ResponseDto> save(FruitDto dto) {
 
         log.info("Attempting to save fruits");
 
@@ -24,7 +26,11 @@ public class FruitsServiceImpl implements FruitsService {
         log.info("saved fruits to the db");
         log.info("fruits db size {}", db.size());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("saved successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponseDto.
+                builder().
+                data(dto).
+                message("successfully saved")
+                .build());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.code.learnspringboot.controller;
 
 import com.code.learnspringboot.dto.FruitDto;
+import com.code.learnspringboot.dto.response.ResponseDto;
 import com.code.learnspringboot.service.FruitsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class FruitsController {
      * @return response entity with the status
      */
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody @Valid FruitDto dto) {
+    public ResponseEntity<ResponseDto> save(@RequestBody @Valid FruitDto dto) {
 
         return fruitsService.save(dto);
 
