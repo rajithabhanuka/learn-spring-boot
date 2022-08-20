@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -36,7 +35,7 @@ public class FruitsController {
      * @return all the fruits that saved in the db
      */
     @GetMapping
-    public ResponseEntity<List<FruitDto>> getAll() {
+    public ResponseEntity<ResponseDto> getAll() {
 
         return fruitsService.getAll();
 
@@ -47,7 +46,7 @@ public class FruitsController {
      * @return fruit data for the given id
      */
     @GetMapping(value = "/{Id}")
-    public ResponseEntity<FruitDto> getById(@PathVariable(value = "Id") Long id) {
+    public ResponseEntity<ResponseDto> getById(@PathVariable(value = "Id") Long id) {
 
         return fruitsService.getById(id);
 

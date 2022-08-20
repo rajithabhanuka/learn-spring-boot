@@ -10,9 +10,9 @@ public interface FruitsService {
 
     ResponseEntity<ResponseDto> save(FruitDto dto);
 
-    ResponseEntity<List<FruitDto>> getAll();
+    ResponseEntity<ResponseDto> getAll();
 
-    ResponseEntity<FruitDto> getById(Long id);
+    ResponseEntity<ResponseDto> getById(Long id);
 
     ResponseEntity<FruitDto> getByName(String name);
 
