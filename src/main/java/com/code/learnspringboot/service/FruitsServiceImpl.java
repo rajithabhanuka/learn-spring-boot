@@ -1,6 +1,10 @@
 package com.code.learnspringboot.service;
 
 import com.code.learnspringboot.dto.FruitDto;
+import com.code.learnspringboot.dto.response.ErrorResponseDto;
+import com.code.learnspringboot.dto.response.ListResponseDto;
+import com.code.learnspringboot.dto.response.ResponseDto;
+import com.code.learnspringboot.dto.response.SuccessResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,34 +19,79 @@ public class FruitsServiceImpl implements FruitsService {
     private static final Map<Long, FruitDto> db = new HashMap<>();
 
     @Override
-    public ResponseEntity<String> save(FruitDto dto) {
+    public ResponseEntity<ResponseDto> save(FruitDto dto) {
 
-        log.info("Attempting to save fruits");
+        try {
 
-        db.put(dto.getId(), dto);
+            log.info("Attempting to save fruits");
 
-        log.info("saved fruits to the db");
-        log.info("fruits db size {}", db.size());
+            db.put(dto.getId(), dto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("saved successfully");
+            log.info("saved fruits to the db");
+            log.info("fruits db size {}", db.size());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponseDto.
+                    builder().
+                    data(dto).
+                    message("successfully saved")
+                    .build());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
+                    builder()
+                    .errorCode("ERR001")
+                    .errorMessage("Something went wrong while saving fruit")
+                    .variables("Fruits ID ".concat(String.valueOf(dto.getId())))
+                    .build());
+        }
     }
 
     @Override
-    public ResponseEntity<List<FruitDto>> getAll() {
-        log.info("Getting all the fruits data from the database");
+    public ResponseEntity<ResponseDto> getAll() {
 
-        List<FruitDto> fruits = new ArrayList<>(db.values());
+        try {
+            log.info("Getting all the fruits data from the database");
 
-        return ResponseEntity.status(HttpStatus.OK).body(fruits);
+            List<FruitDto> fruits = new ArrayList<>(db.values());
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ListResponseDto
+                            .builder()
+                            .message("Successful")
+                            .data(Collections.singletonList(fruits)).build());
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
+                    builder()
+                    .errorCode("ERR002")
+                    .errorMessage("Something went wrong while getting all the fruits")
+                    .variables("")
+                    .build());
+        }
 
     }
 
     @Override
-    public ResponseEntity<FruitDto> getById(Long id) {
+    public ResponseEntity<ResponseDto> getById(Long id) {
 
-        log.info("Getting fruit by its id");
+        try {
+            log.info("Getting fruit by its id");
 
-        return ResponseEntity.status(HttpStatus.OK).body(db.get(id));
+            return ResponseEntity.status(HttpStatus.OK).body(SuccessResponseDto
+                    .builder()
+                    .message("Successfully found")
+                    .data(db.get(id))
+                    .build());
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
+                    builder()
+                    .errorCode("ERR003")
+                    .errorMessage("Record Not Found")
+                    .variables("Fruit Id".concat(String.valueOf(id)))
+                    .build());
+        }
     }
 
     @Override
