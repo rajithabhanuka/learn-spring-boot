@@ -101,3 +101,44 @@ curl --location --request POST 'http://localhost:8080/fruits' \
 - ```docker rm mysql-docker``` remove a docker container
 - ```docker rmi -f fruit-app``` remove an docker image
 - ```docker ps -a``` - see all docker containers
+
+### Part 8 - CI Pipeline with GitHub ###
+
+Below is the ci.yml file described in the project. you can use this by changing according to your configurations. (image repo, docker credentials)
+
+```
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master-pipeline" ]
+#   pull_request:
+#     branches: [ "master-pipeline" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        cache: 'maven'
+    - name: Build with Maven
+      run: mvn clean install -DskipTests=true
+      
+    - name: Build & push Docker image
+      uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: rajithabhanuka/fruit-app
+        tags: 1.1
+        registry: docker.io
+        dockerfile: Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}  
+   
+```
