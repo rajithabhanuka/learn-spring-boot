@@ -84,7 +84,7 @@ curl --location --request POST 'http://localhost:8080/fruits' \
 ### Part 7 - Dockerized ###
 
 1. Create a network - ```docker network create spring-mysql-network```
-2. Create a folder to mount the MySqlQL data, then we can protect data while restarting MySQL container or crashing the container
+2. Create a folder to mount the MySqlQL data, then we can protect data while restarting MySQL container or crashing the container.
    ![MySQL Data Directory](/images/mysql_data_directory.PNG)
 3. Run this command to create a MySQL container - ```docker run --name mysql-docker --network spring-mysql-network -v C://Users//rajit//MYSQL_DATA//MYSQL_CONFIG:/etc/mysql/conf.d --env="MYSQL_ROOT_PASSWORD=root" --env="MYSQL_PASSWORD=root" --env="MYSQL_DATABASE=fruits_db" -v C://Users//rajit//MYSQL_DATA//DATA_DIR:/var/lib/mysql -d -p 3306:3306 mysql:8.0```
 4. Go to the project root directory and run - ```mvn clean install -DskipTests=true```
