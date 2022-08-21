@@ -1,7 +1,9 @@
 package com.code.learnspringboot.dto;
 
+import com.code.learnspringboot.model.FruitEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
@@ -20,5 +22,11 @@ public class FruitDto {
 
     @Min(value = 0, message = "Qty should be a Positive number")
     private Integer qty;
+
+    public FruitEntity toEntity(){
+        FruitEntity entity = new FruitEntity();
+        BeanUtils.copyProperties(this, entity);
+        return entity;
+    }
 
 }

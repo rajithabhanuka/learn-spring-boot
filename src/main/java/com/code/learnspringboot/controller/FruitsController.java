@@ -57,7 +57,7 @@ public class FruitsController {
      * @return fruit data for the given name
      */
     @GetMapping(value = "/by-name")
-    public ResponseEntity<FruitDto> getByName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<ResponseDto> getByName(@RequestParam(value = "name") String name) {
 
         return fruitsService.getByName(name);
 
@@ -69,7 +69,7 @@ public class FruitsController {
      * @return updated details
      */
     @PutMapping(value = "/{Id}")
-    public ResponseEntity<FruitDto> update(@RequestBody FruitDto dto,
+    public ResponseEntity<ResponseDto> update(@RequestBody FruitDto dto,
                                            @PathVariable(value = "Id") Long id) {
 
         return fruitsService.update(dto, id);
@@ -81,7 +81,7 @@ public class FruitsController {
      * @return message as a text
      */
     @DeleteMapping(value = "/{Id}")
-    public ResponseEntity<String> delete(@PathVariable(value = "Id") Long id) {
+    public ResponseEntity<ResponseDto> delete(@PathVariable(value = "Id") Long id) {
 
         return fruitsService.delete(id);
 
