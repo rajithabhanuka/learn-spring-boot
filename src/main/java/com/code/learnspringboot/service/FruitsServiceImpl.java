@@ -5,6 +5,8 @@ import com.code.learnspringboot.dto.response.ErrorResponseDto;
 import com.code.learnspringboot.dto.response.ListResponseDto;
 import com.code.learnspringboot.dto.response.ResponseDto;
 import com.code.learnspringboot.dto.response.SuccessResponseDto;
+import com.code.learnspringboot.model.FruitEntity;
+import com.code.learnspringboot.repository.FruitRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,12 @@ public class FruitsServiceImpl implements FruitsService {
 
     private static final Map<Long, FruitDto> db = new HashMap<>();
 
+    private final FruitRepository fruitRepository;
+
+    public FruitsServiceImpl(FruitRepository fruitRepository) {
+        this.fruitRepository = fruitRepository;
+    }
+
     @Override
     public ResponseEntity<ResponseDto> save(FruitDto dto) {
 
@@ -25,18 +33,18 @@ public class FruitsServiceImpl implements FruitsService {
 
             log.info("Attempting to save fruits");
 
-            db.put(dto.getId(), dto);
+            FruitEntity saved = fruitRepository.save(dto.toEntity());
 
             log.info("saved fruits to the db");
-            log.info("fruits db size {}", db.size());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponseDto.
                     builder().
-                    data(dto).
+                    data(saved.toDto()).
                     message("successfully saved")
                     .build());
 
         } catch (Exception e) {
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
                     builder()
                     .errorCode("ERR001")
@@ -52,7 +60,9 @@ public class FruitsServiceImpl implements FruitsService {
         try {
             log.info("Getting all the fruits data from the database");
 
-            List<FruitDto> fruits = new ArrayList<>(db.values());
+            List<FruitDto> fruits = new ArrayList<>();
+
+            fruitRepository.findAll().forEach(s -> fruits.add(s.toDto()));
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ListResponseDto
@@ -78,10 +88,12 @@ public class FruitsServiceImpl implements FruitsService {
         try {
             log.info("Getting fruit by its id");
 
+            FruitEntity entity = fruitRepository.findById(id).orElseThrow(() -> new Exception("Not Found"));
+
             return ResponseEntity.status(HttpStatus.OK).body(SuccessResponseDto
                     .builder()
                     .message("Successfully found")
-                    .data(db.get(id))
+                    .data(entity.toDto())
                     .build());
         } catch (Exception e) {
 
@@ -95,39 +107,75 @@ public class FruitsServiceImpl implements FruitsService {
     }
 
     @Override
-    public ResponseEntity<FruitDto> getByName(String name) {
+    public ResponseEntity<ResponseDto> getByName(String name) {
 
-        log.info("Getting fruit by its name");
+        try {
+            log.info("Getting fruit by its name");
 
-        Optional<FruitDto> fruit = db.values()
-                .stream()
-                .filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
+            FruitEntity entity = fruitRepository.findByName(name).orElseThrow(() -> new Exception("Not Found"));
 
-        return fruit.map(dto -> ResponseEntity.status(HttpStatus.OK).body(dto)).orElse(null);
+            return ResponseEntity.status(HttpStatus.OK).body(SuccessResponseDto
+                    .builder()
+                    .message("Successfully found")
+                    .data(entity.toDto())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
+                    builder()
+                    .errorCode("ERR003")
+                    .errorMessage("Record Not Found")
+                    .variables("Fruit name".concat(name))
+                    .build());
+        }
     }
 
     @Override
-    public ResponseEntity<FruitDto> update(FruitDto dto, Long id) {
+    public ResponseEntity<ResponseDto> update(FruitDto dto, Long id) {
 
         // If you need to search fruit id in the db, that also can do
         // If object found you can update
 
-        log.info("Attempting to update fruits");
+        try {
 
-        db.put(dto.getId(), dto);
+            log.info("Attempting to update fruits");
 
-        log.info("Updated fruits");
+            FruitEntity entity = fruitRepository.findById(id).orElseThrow(() -> new Exception("Not Found"));
 
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
+            entity = dto.toEntity();
+
+            FruitEntity saved = fruitRepository.save(entity);
+
+            log.info("Updated fruits");
+
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(SuccessResponseDto.
+                    builder().
+                    data(saved.toDto()).
+                    message("successfully updated")
+                    .build());
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.
+                    builder()
+                    .errorCode("ERR004")
+                    .errorMessage("Something went wrong while updating fruit")
+                    .variables("Fruits ID ".concat(String.valueOf(dto.getId())))
+                    .build());
+        }
+
     }
 
     @Override
-    public ResponseEntity<String> delete(Long id) {
+    public ResponseEntity<ResponseDto> delete(Long id) {
 
         log.info("Attempting to delete the fruit by its id");
 
-        db.remove(id);
+        fruitRepository.deleteById(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body("successfully deleted");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(SuccessResponseDto.
+                builder().
+                data(null).
+                message("successfully deleted")
+                .build());
     }
 }
