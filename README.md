@@ -78,3 +78,7 @@ curl --location --request POST 'http://localhost:8080/fruits' \
 ### Part 4 - Service Layer ###
 
 ### Part 5 - Response Handling ###
+
+### Part 6 - MySql DB with JPA ###
+
+### Part 7 - Dockerized ###
