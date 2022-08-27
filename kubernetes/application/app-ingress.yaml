@@ -16,6 +16,7 @@ spec:
                   number: 8080
 
 # Remember to add a kubernetes cluster IP address to the host file
+# Get the IP of Kubernetes cluster : kubectl cluster-info
 # Ubuntu /etc/hosts
 # Windows C:\Windows\System32\drivers\etc\hosts
 
