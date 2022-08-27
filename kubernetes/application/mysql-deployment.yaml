@@ -1,0 +1,47 @@
+apiVersion: apps/v1                 # Kubernetes API version
+kind: Deployment                    # Kubernetes' resource kind we are creating
+metadata:                           # Metadata of the resource kind we are creating
+  name: mysql-deployment
+  labels:
+    app: mysql
+spec:
+  replicas: 1                       # number of Pods that you need to deploy
+  selector:                         # mysql Pod should contain same labels
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:                       # must match 'Service' and 'Deployment' selectors
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0          # image from docker-hub
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets  # refers to the mysql-secrets.yaml
+                  key: password
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets  # refers to the mysql-secrets.yaml
+                  key: password
+            - name: MYSQL_DATABASE     # setting Database name
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map     # refers to mysql-configMap.yaml
+                  key: dbName
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:                      # mounting volume obtained from Persistent Volume Claim
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql      # this is the path in the container on which the mounting will take place
+      volumes:
+        - name: mysql-persistent-storage     # obtaining 'volume' from PVC
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim        # refers to mysql-persistent-volume-claim.yaml
+
+# Read more - https://kubernetes.io/docs/tasks/run-application/run-single-instance-stateful-application/

@@ -1,0 +1,18 @@
+apiVersion: v1               # Kubernetes API version
+kind: Service                # Kubernetes' resource kind we are creating
+metadata:                    # Metadata of the resource kind we are creating
+  name: fruit-app-service    # refers to app-ingress.yaml
+spec:
+  selector:
+    app: fruit-app           # refers to app-deployment.yaml
+#  type: LoadBalancer        # Can use to load balance the traffic across multiple replicas of ingress controller pods
+  ports:
+    - protocol: TCP
+      port: 8080             # The port that the service is running on in the cluster
+      targetPort: 8080       # The port exposed by the service
+#  type: NodePort 30000      # type of the service (commented since we are using ingress).
+
+
+#  NodePort used for external services then we can access our microservice from the outside (not recommended).
+
+# Read more - https://kubernetes.io/docs/concepts/services-networking/service/

@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1                # Kubernetes API version
+kind: StorageClass                           # Kubernetes' resource kind we are creating
+metadata:                                    # Metadata of the resource kind we are creating
+  name: local-storage                        # Refers to mysql-persistent-volume-claim.yaml
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+# In this example we are not using local storage
