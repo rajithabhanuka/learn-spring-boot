@@ -17,7 +17,7 @@ spec:
       containers:
         - name: fruit-app
 #          image: fruit-app:1.1               # from local docker registry
-          image: rajithabhanuka/fruit-app:1.1 # from private docker registry in the docker hub
+          image: rajithabhanuka/fruit-app:latest # from private docker registry in the docker hub
           ports:
             - containerPort: 8080
           env:                   # Setting Environmental Variables

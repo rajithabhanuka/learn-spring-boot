@@ -26,7 +26,7 @@ jobs:
       uses: mr-smithers-excellent/docker-build-push@v5
       with:
         image: rajithabhanuka/fruit-app
-        tags: 1.1
+        tags: 1.1, latest
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
