@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1        # Kubernetes API version
+kind: Ingress                           # Kubernetes' resource kind we are creating
+metadata:                               # Metadata of the resource kind we are creating
+  name: app-ingress
+spec:
+  rules:
+    - host: fruit-app.com
+      http:
+        paths:
+          - path: /                     # You can define more backends with various paths to various microservices
+            pathType: Prefix
+            backend:
+              service:
+                name: fruit-app-service  # refers to app-service.yaml
+                port:
+                  number: 8080
+
+# Remember to add a kubernetes cluster IP address to the host file
+# Ubuntu /etc/hosts
+# Windows C:\Windows\System32\drivers\etc\hosts
+
+# Read more - https://kubernetes.io/docs/concepts/services-networking/ingress/

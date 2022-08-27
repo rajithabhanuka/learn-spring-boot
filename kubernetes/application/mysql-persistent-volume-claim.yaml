@@ -1,0 +1,14 @@
+apiVersion: v1                       # Kubernetes API version
+kind: PersistentVolumeClaim          # Kubernetes' resource kind we are creating
+metadata:                            # Metadata of the resource kind we are creating
+  name: mysql-pv-claim               # Name of PVC essential for identifying the storage data, refers to mysql-deployment.yaml
+spec:
+  accessModes:
+    - ReadWriteOnce                  # This specifies the mode of the claim that we are trying to create.
+  resources:
+    requests:
+      storage: 1Gi                   # This will tell kubernetes about the amount of space we are trying to claim.
+#  storageClassName: local-storage   # This will tell PVC to claim the data from local storage, refers to mysql-storage-class.yaml
+
+# Define a 'Persistent volume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
+# Read more - https://kubernetes.io/docs/concepts/storage/persistent-volumes/

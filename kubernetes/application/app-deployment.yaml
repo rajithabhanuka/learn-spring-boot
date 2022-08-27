@@ -1,0 +1,46 @@
+apiVersion: apps/v1            # Kubernetes API version
+kind: Deployment               # Kubernetes' resource kind we are creating
+metadata:                      # Metadata of the resource kind we are creating
+  name: fruit-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fruit-app            # refers to app-service.yaml
+  replicas: 3                   # number of Pods that you need to deploy
+  template:
+    metadata:
+      labels:
+        app: fruit-app
+    spec:
+      imagePullSecrets:          # if we need get image from private docker registry
+        - name: docker-secrets   # refers to docker-secrets.yaml
+      containers:
+        - name: fruit-app
+#          image: fruit-app:1.1               # from local docker registry
+          image: rajithabhanuka/fruit-app:1.1 # from private docker registry in the docker hub
+          ports:
+            - containerPort: 8080
+          env:                   # Setting Environmental Variables
+            - name: DB_HOST      # Setting Database host address from configMap
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: host      # refers to mysql-configMap.yaml
+            - name: DB_NAME      # Setting Database name from configMap
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: dbName    # refers to mysql-configMap.yaml
+            - name: DB_USERNAME  # Setting Database username from Secret
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: username  # refers to mysql-secrets.yaml
+            - name: DB_PASSWORD  # Setting Database password from Secret
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: password  # refers to mysql-secrets.yaml
+
+# Read more - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# Read more - https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
