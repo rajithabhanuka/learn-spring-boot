@@ -3,7 +3,7 @@ kind: ConfigMap               # Kubernetes' resource kind we are creating
 metadata:                     # Metadata of the resource kind we are creating
   name: mysql-config-map      # refers to app-deployment.yaml
 data:
-  host: mysql         # Host name of our application
+  host: mysql-service         # Host name of our application
   dbName: fruits_db           # Database name of our application
 
 # Read more - https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/
